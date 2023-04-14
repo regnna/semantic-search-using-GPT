@@ -1,7 +1,9 @@
 from dotenv import load_dotenv
 import os
-key=os.getenv('PINECONE_API')
-load_dotenv()
+import streamlit as st
+# key=os.getenv('PINECONE_API')
+# load_dotenv()
+key=st.secrets["PINECONE_API"]
 import pinecone
 from sentence_transformers import SentenceTransformer,util
 # from sentence_transformers import SentenceTransformer,util

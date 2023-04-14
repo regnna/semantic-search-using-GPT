@@ -1,10 +1,11 @@
 import openai
 import streamlit as st
-from dotenv import load_dotenv
-import os
+# from dotenv import load_dotenv
+# import os
 
-load_dotenv()
-key=os.getenv('API_KEY')
+# load_dotenv()
+key=st.secrets['api-key']
+# key=os.getenv('API_KEY')
 openai.api_key=key
 # openai.api_key='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'
 def create_prompt(context,query):
