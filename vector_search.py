@@ -13,7 +13,7 @@ pinecone.init(api_key=key,environment="northamerica-northeast1-gcp")
 index=pinecone.Index("indi")
 
 def addData(corpusData,url):
-    id = id = index.describe_index_stats()['total_vector_count']
+    id  = index.describe_index_stats()['total_vector_count']
     for i in range(len(corpusData)):
         chunk=corpusData[i]
         chunkInfo=(str(id+i),
