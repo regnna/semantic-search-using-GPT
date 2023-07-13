@@ -58,4 +58,4 @@ if button and (url or query):
             st.expander("Context").write(context)
             # prompt = openaianswer.create_prompt(context,query)
             # answer = openaianswer.generate_answer(prompt)
-            st.success("Answer: "+Context)
+            st.success("Answer: "+Context[:25])
