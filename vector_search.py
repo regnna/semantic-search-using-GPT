@@ -1,15 +1,15 @@
 # from dotenv import load_dotenv
 import os
 import streamlit as st
-key=os.getenv('PINECONE_API')
+# key=os.getenv('PINECONE_API')
 # load_dotenv()
-# key=st.secrets["PINECONE_API"]
+key=st.secrets["PINECONE_API"]
 import pinecone
 from sentence_transformers import SentenceTransformer,util
 # from sentence_transformers import SentenceTransformer,util
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
-pinecone.init(api_key='b4367181-aa10-4642-9a9d-978b5f586928',environment="northamerica-northeast1-gcp")
+pinecone.init(api_key=key,environment="northamerica-northeast1-gcp")
 index=pinecone.Index("indie")
 
 
