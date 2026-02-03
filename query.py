@@ -1,32 +1,55 @@
 import requests
-from bs4 import BeautifulSoup
+import streamlit as st
 
-def get_html_content(url):
-    response = requests.get(url)
-    return response.content
+OLLAMA_URL = 'http://localhost:11434'
 
-def get_plain_text(html_content):
-    soup = BeautifulSoup(html_content, 'html.parser')
-    for script in soup(["script"]):
-        script.extract()
-    return soup.get_text()
+def create_prompt(context, query):
+    """Create prompt for LLM"""
+    header = """Answer the question as truthfully as possible using the provided context. 
+If the answer is not contained within the text, say 'Sorry, I cannot find the answer in the provided context.'
 
+Context:
+"""
+    return header + context + "\n\nQuestion: " + query + "\n\nAnswer:"
 
-def split_text_into_chunks(plain_text, max_chars=2000):
-    text_chunks = []
-    current_chunk = ""
-    for line in plain_text.split("\n"):
-        if len(current_chunk) + len(line) + 1 <= max_chars:
-            current_chunk += line + " "
+def generate_answer(prompt):
+    """Generate answer using local Ollama (replaces OpenAI)"""
+    try:
+        response = requests.post(
+            f'{OLLAMA_URL}/api/generate',
+            json={
+                "model": "llama3.2",
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": 0.3,
+                    "num_predict": 500,
+                    "stop": [" END", "Context:", "Question:"]
+                }
+            },
+            timeout=60
+        )
+        
+        if response.status_code == 200:
+            return response.json().get('response', '').strip()
         else:
-            text_chunks.append(current_chunk.strip())
-            current_chunk = line + " "
-    if current_chunk:
-        text_chunks.append(current_chunk.strip())
-    return text_chunks
+            return f"Error: Ollama returned status {response.status_code}"
+            
+    except requests.exceptions.ConnectionError:
+        return """⚠️ Ollama not connected!
 
-def scrape_text_from_url(url, max_chars=2000):
-    html_content = get_html_content(url)
-    plain_text = get_plain_text(html_content)
-    text_chunks = split_text_into_chunks(plain_text, max_chars)
-    return text_chunks
+To fix this:
+1. Install Ollama: https://ollama.com
+2. Run: ollama pull llama3.2
+3. Run: ollama serve (keep this running)"""
+    
+    except Exception as e:
+        return f"Error generating answer: {str(e)}"
+
+def check_ollama_status():
+    """Check if Ollama is running"""
+    try:
+        response = requests.get(f'{OLLAMA_URL}/api/tags', timeout=2)
+        return response.status_code == 200
+    except:
+        return False
