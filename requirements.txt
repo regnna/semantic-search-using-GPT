@@ -1,6 +1,20 @@
+# Core Framework
+streamlit>=1.40.0
 
-streamlit
-openai
-sentence-transformers
-pinecone-client
-BeautifulSoup4
+# Embeddings (CPU-only, much smaller)
+sentence-transformers>=3.0.1
+torch>=2.5.0 --index-url https://download.pytorch.org/whl/cpu
+numpy>=1.26.0
+
+# Vector Search
+faiss-cpu>=1.7.4
+
+# Local LLM Integration
+requests>=2.31.0
+
+# Data Processing
+pandas>=2.1.0
+
+# Utilities
+tqdm>=4.66.0
+git-filter-repo
